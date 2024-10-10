@@ -1,0 +1,7 @@
+@media (max-width: 425px) {
+    .editor {
+      
+      min-height: 1000px;
+      width: 50%;
+    }
+  }
