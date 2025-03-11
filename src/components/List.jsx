@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { firestore } from './Firebase'; // Your Firebase configuration
+import { firestore } from './Firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { message } from 'antd';
+import { Popconfirm } from 'antd';
 
 const List = () => {
   const [cards, setCards] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch data from Firestore
+  const fetchCards = async () => {
+    const querySnapshot = await getDocs(collection(firestore, 'Articles'));
+    const cardData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setCards(cardData);
+  };
+
   useEffect(() => {
-    const fetchCards = async () => {
-      const querySnapshot = await getDocs(collection(firestore, 'EditorContent'));
-      const cardData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setCards(cardData);
-    };
     fetchCards();
   }, []);
 
-  // Delete card function
   const deleteCard = async (id) => {
     try {
-      await deleteDoc(doc(firestore, 'EditorContent', id));
-      setCards(cards.filter((card) => card.id !== id));
+      await deleteDoc(doc(firestore, 'Articles', id));
+      fetchCards();
       message.success('Card deleted successfully!');
     } catch (error) {
       console.error('Error deleting card:', error);
@@ -33,75 +33,77 @@ const List = () => {
     }
   };
 
-  // Navigate to the editor with card's id for updating
   const editCard = (id) => {
     navigate(`/edit/${id}`);
   };
 
-  // Function to remove <img> tags from HTML content
-  const stripImagesFromHtml = (htmlContent) => {
-    return htmlContent.replace(/<img[^>]*>/g, '');
-  };
-
   return (
-    <>    
-    <div style={{ marginLeft: '300px', marginTop: '20px' }}>
-      <div style={{
-        backgroundColor: '#1F1838',
-        width: '97%',
-        padding: '20px',
-        borderRadius: '8px',
-        marginBottom: '20px',
-        marginRight: '20px',
-        textAlign: 'center',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-      }}>
-        <h1 style={{ margin: '0', color: '#ffff', fontSize: '24px' }}>Guided Meditation</h1>
-        <p style={{ margin: '10px 0 0 0', color: '#ffff', fontSize: '16px' }}>Here you can view the articles you added and update them too!</p>
-      </div>
+    <>
+    <div className="ml-[300px] mt-[20px]">
+  <div className="bg-purple-900 w-[97%] p-[20px] rounded-lg mb-[20px] mr-[20px] text-center shadow-md">
+    <h1 className="m-0 text-white text-[24px]">Guided Meditation</h1>
+    <p className="mt-[10px] mb-0 text-white text-[16px]">
+      Here you can view the articles you added and update them too!
+    </p>
+  </div>
 </div>
-    <div className="cards-container ml-[300px] grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 gap-8 p-0 mt-0 mr-7 mb-7">
-      {cards.map((card) => (
-        <div
-          key={card.id}
-          className="bg-[#2b263c] shadow-lg rounded-lg overflow-hidden sm:overflow-x-auto transition-transform transform hover:scale-105 duration-300"
-        >
-          {/* Display the image from the separate imageUrl field */}
-          {card.imageUrl && (
-            <img
-              src={card.imageUrl}
-              alt={card.title || 'Card image'}
-              className="w-full h-40 object-cover"
-            />
-          )}
+      <div className="cards-container ml-[300px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-0 mt-0 mr-7 mb-7">
+        {cards.map((card) => (
+          <div
+            key={card.id}
+            className="flex flex-col bg-[#2b263c] shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
+            style={{ width: '100%', height: '400px' }}  // Fix the height and width for consistency
+          >
+            {/* Image Section */}
+            <div className="w-full h-48 bg-gray-700">
+              {card.pictureUrl ? (
+                <img
+                  src={card.pictureUrl}
+                  alt={card.title || 'Card image'}
+                  className="w-full h-full object-cover rounded-t-lg"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-white">
+                  No Image Available
+                </div>
+              )}
+            </div>
 
-          <div className="p-4">
-            {/* Display the rest of the HTML content, excluding images */}
-            <div
-              className="text-white text-sm overflow-hidden overflow-ellipsis h-16"
-              dangerouslySetInnerHTML={{ __html: stripImagesFromHtml(card.htmlContent) }}
-            />
+            {/* Content Section */}
+            <div className="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                {/* Title displayed on a single line */}
+                <h2 className="text-lg font-bold text-white truncate">{card.title}</h2>
 
-            <div className="flex justify-between items-center mt-4">
-              <button
-                onClick={() => editCard(card.id)}
-                className="bg-[#BD23FF] text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => deleteCard(card.id)}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-              >
-                Delete
-              </button>
+                {/* Subtitle displayed on a single line */}
+                <p className="text-sm text-gray-300 truncate">{card.subTitle}</p>
+              </div>
+
+              {/* Buttons Section */}
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={() => editCard(card.id)}
+                  className="bg-[#BD23FF] text-white px-4 py-2 rounded hover:bg-[#9b1fd6] transition-colors"
+                >
+                  Edit
+                </button>
+
+                <Popconfirm
+                  title="Are you sure you want to delete this card?"
+                  onConfirm={() => deleteCard(card.id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
+                    Delete
+                  </button>
+                </Popconfirm>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
     </>
-
   );
 };
 

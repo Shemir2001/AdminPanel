@@ -1,7 +1,20 @@
-@media (max-width: 425px) {
+@media (min-width) and (max-width: 425px) {
     .editor {
       
       min-height: 1000px;
       width: 50%;
     }
+    .top{
+      height: 100%;
+      width: 100%;
+    }
+  }
+  .jodit-toolbar button {
+    padding: 10px 15px; /* Adjust padding for larger buttons */
+    font-size: 16px; /* Increase font size */
+  }
+  
+  .jodit-toolbar button .jodit-button-icon {
+    width: 24px; /* Increase icon size */
+    height: 24px; /* Increase icon size */
   }

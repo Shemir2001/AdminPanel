@@ -113,10 +113,10 @@ const KidsCoachForm = () => {
   sx={{ 
     mt: 3, 
     width: '100%', 
-    backgroundColor: '#BD23FF', // Set default background color
-    color: 'white', // Set text color
+    backgroundColor: '#BD23FF',
+    color: 'white', 
     '&:hover': {
-      backgroundColor: '#9F1D9C', // Change background color on hover
+      backgroundColor: '#9F1D9C', 
     }
   }}
 >

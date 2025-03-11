@@ -1,0 +1,48 @@
+
+
+.custom-table:hover{
+  background-color: #1f1838 !important;
+}
+
+/* Apply consistent styles to table rows */
+ .custom-row {
+  background-color: #1f1838; 
+  color: white;
+}
+
+
+ Ensure consistent avatar styling */
+.custom-table .ant-avatar {
+  background-color: #1f1838 !important; /* Placeholder avatar background */
+  color: #a8a4b5 !important; /* Placeholder avatar icon color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%; /* Circular shape */
+  font-size: 20px;
+}
+
+/* Table header styling */
+.custom-table .ant-table-thead > tr > th {
+  background-color: #352f4c !important; /* Dark header background */
+  color: white !important; /* White header text */
+  text-align: center;
+  padding: 10px;
+}
+
+  .loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #bd23ff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .video-container {
+    margin-bottom: 1rem;
+  }
