@@ -14,7 +14,7 @@ import Mindfulness from "./components/Mindfullness.jsx";
 import MeditationForm from "./components/InappMessaging.jsx";
 import NotificationPanel from "./components/Notifications.jsx";
 import ProtectedRoute from "./components/Protected.jsx";
-
+import Terms from "./components/terms.jsx";
 const router = createBrowserRouter([
   {
     path: "/login",
@@ -31,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: "/account-deletion",
     element: <AccountDeletion />,
+  },
+  {
+    path: "/terms-condition",
+    element: <Terms />,
   },
   {
     path: "/",
